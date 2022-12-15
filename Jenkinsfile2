@@ -1,0 +1,20 @@
+pipeline {
+    agent any
+tools{
+     maven 'maven3.8.6' 
+  }
+  
+    stages {
+        stage('checke out code'){
+        steps{
+        git branch: 'master', url: 'https://github.com/yellaiah56/sample-application.git'
+        }
+      }
+        stage('build'){
+        steps{
+        sh 'mvn clean package'
+        }
+        }
+        
+    } //stagesend
+} // pipelineend
