@@ -1,0 +1,56 @@
+pipeline {
+    agent any
+tools{
+     maven 'maven3.8.6' 
+  }
+  
+    stages {
+        stage('checke out code'){
+        steps{
+        git branch: 'test', url: 'https://github.com/yellaiah56/sample-web-project.git'
+        }
+      }
+        stage('build'){
+        steps{
+        sh 'mvn clean package'
+        }
+        }
+        stage("build image"){
+       /* when {
+         expression{
+            return env.GIT_BRANCH == "origin/master"
+                   }
+            } */
+            
+            steps{
+                sh "docker build -t yellaiah56/web_project:${env.BUILD_NUMBER} ."
+            }
+        }
+        stage('docker image verify'){
+        steps{
+        sh 'docker images'
+        }
+        }
+        stage('docker login'){
+        steps{
+        withCredentials([string(credentialsId: 'dockerhub_pwd', variable: 'password')]) {
+    sh 'docker login -u yellaiah56 -p $password'
+        } 
+          }
+            }
+        stage('docker image push'){
+        steps{
+        sh "docker push yellaiah56/web_project:${env.BUILD_NUMBER}"
+        }
+        }
+        stage('deploy'){
+        input{
+           message "Do you want to deploy to production"
+            }
+        steps{
+        sh "docker run --name webcontainer -p 9090:8080 yellaiah56/web_project:${env.BUILD_NUMBER}"
+        sh 'docker ps'
+        }
+        }
+    }
+}
