@@ -15,6 +15,17 @@ tools{
         sh 'mvn clean package'
         }
         }
+         stage("build image"){
+       /* when {
+         expression{
+            return env.GIT_BRANCH == "origin/master"
+                   }
+            } */
+            
+            steps{
+                sh "docker build -t yellaiah56/web-project:${env.BUILD_NUMBER} ."
+            }
+        }
         
     } //stagesend
 } // pipelineend
