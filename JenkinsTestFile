@@ -7,7 +7,7 @@ tools{
     stages {
         stage('checke out code'){
         steps{
-        git branch: 'test', url: 'https://github.com/yellaiah56/sample-web-project.git'
+        git branch: 'master', url: 'https://github.com/yellaiah56/sample-application.git'
         }
       }
         stage('build'){
@@ -15,6 +15,7 @@ tools{
         sh 'mvn clean package'
         }
         }
+        /*
         stage("build image"){
        /* when {
          expression{
@@ -43,6 +44,11 @@ tools{
         sh "docker push yellaiah56/web_project:${env.BUILD_NUMBER}"
         }
         }
+        stage('clean container'){
+        steps{
+        sh "docker rm -f webcontainer || true "
+        }
+        }
         stage('deploy'){
         input{
            message "Do you want to deploy to production"
@@ -52,5 +58,6 @@ tools{
         sh 'docker ps'
         }
         }
-    }
-}
+        */
+    }//stages end
+} // pipeline end
